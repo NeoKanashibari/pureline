@@ -4,7 +4,7 @@
 
 # Set default symbols if not already defined in config
 # Defaults should be standard symbols.
-[[ -z ${PL_SYMBOLS[git_branch]} ]] && PL_SYMBOLS[git_branch]="╬" 
+[[ -z ${PL_SYMBOLS[git_branch]} ]] && PL_SYMBOLS[git_branch]="╬"
 [[ -z ${PL_SYMBOLS[git_untracked]} ]] && PL_SYMBOLS[git_untracked]="?"
 [[ -z ${PL_SYMBOLS[git_stash]} ]] && PL_SYMBOLS[git_stash]="§"
 [[ -z ${PL_SYMBOLS[git_ahead]} ]] && PL_SYMBOLS[git_ahead]="↑"
@@ -30,8 +30,12 @@ function git_segment {
     which git >/dev/null 2>&1 || return;  ## return if no git
 
     git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
-    
+
     [[ -z $git_branch  ]] && return;  ## return early if not a git branch
+
+    if [[ $(git rev-parse --is-bare-repository) == "true" ]]; then
+        git_branch="bare"
+    fi
 
     local bg_color="$1"
     local fg_color="$2"
